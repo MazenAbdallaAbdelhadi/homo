@@ -86,25 +86,25 @@ serviceSchema.pre(/^find/, function (next) {
   next();
 });
 
-const setImageURL = (doc) => {
-  if (doc.imageCover) {
-    const imageUrl = `${process.env.BASE_URL}/products/${doc.imageCover}`;
-    doc.imageCover = imageUrl;
-  }
-  if (doc.images) {
-    const imagesList = [];
-    doc.images.forEach((image) => {
-      const imageUrl = `${process.env.BASE_URL}/products/${image}`;
-      imagesList.push(imageUrl);
-    });
-    doc.images = imagesList;
-  }
-};
+// const setImageURL = (doc) => {
+//   if (doc.imageCover) {
+//     const imageUrl = `${process.env.BASE_URL}/products/${doc.imageCover}`;
+//     doc.imageCover = imageUrl;
+//   }
+//   if (doc.images) {
+//     const imagesList = [];
+//     doc.images.forEach((image) => {
+//       const imageUrl = `${process.env.BASE_URL}/products/${image}`;
+//       imagesList.push(imageUrl);
+//     });
+//     doc.images = imagesList;
+//   }
+// };
 
-// findOne, findAll and update
-serviceSchema.post("init", (doc) => {
-  setImageURL(doc);
-});
+// // findOne, findAll and update
+// serviceSchema.post("init", (doc) => {
+//   setImageURL(doc);
+// });
 
 const Service = mongoose.model("Service", serviceSchema);
 module.exports = Service;
