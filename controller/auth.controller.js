@@ -18,6 +18,7 @@ const sendEmail = require("../services/email");
  * @access public
  */
 exports.register = asyncHandler(async (req, res) => {
+  console.log(req.body);
   // 1- create a new user
   const user = await User.create(req.body);
 
