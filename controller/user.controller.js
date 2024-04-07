@@ -15,7 +15,6 @@ const { generateAccessToken } = require("../services/auth");
 exports.uploadProfileImage = uploadSingle("profileImage");
 
 exports.resizeProfileImage = asyncHandler(async (req, res, next) => {
-  console.log("TESTING REGISTER ", req.file);
   if (req.file) {
     const filename = `user-${uuidV4()}-${Date.now()}.jpeg`;
 
@@ -29,7 +28,6 @@ exports.resizeProfileImage = asyncHandler(async (req, res, next) => {
 
     // Save image into our db
     req.body.profileImage = data.secure_url;
-    console.log("TESTING REGISTER ", req.body);
   }
   next();
 });

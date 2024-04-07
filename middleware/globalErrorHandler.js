@@ -9,6 +9,7 @@ const globalErrorHandler = async (err, req, res, _next) => {
       data: process.env.NODE_ENV === "production" ? null : err.stack,
     }).body;
 
+  console.log(body);
   res.status(statusCode).json(body);
 };
 
