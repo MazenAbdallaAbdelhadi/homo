@@ -26,6 +26,12 @@ exports.registerValidator = [
     .withMessage("password is required")
     .isLength({ min: 8 })
     .withMessage("password must be at least 8 characters"),
+  body("passwordConfirm")
+    .notEmpty()
+    .withMessage("password confirm is required")
+    .custom((val, { req }) => {
+      return req.body.password === val;
+    }),
   body("bio").optional(),
   body("profileImage").optional(),
   checkExact(),
