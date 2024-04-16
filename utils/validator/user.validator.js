@@ -4,13 +4,7 @@ const User = require("../../models/user.model");
 const validatorMiddleware = require("../../middleware/validatorMiddleware");
 
 const validateRole = (val) => {
-  const numericRole = parseInt(val);
-
-  if (isNaN(numericRole)) {
-    throw new Error("Role must be a number");
-  }
-
-  if (![roles.ADMIN, roles.CUSTOMER, roles.PROVIDER].includes(numericRole)) {
+  if (![roles.ADMIN, roles.CUSTOMER, roles.PROVIDER].includes(val)) {
     throw new Error("invalid role");
   }
 
@@ -18,13 +12,7 @@ const validateRole = (val) => {
 };
 
 const validateLoggedUserRole = (val) => {
-  const numericRole = parseInt(val);
-
-  if (isNaN(numericRole)) {
-    throw new Error("Role must be a number");
-  }
-
-  if (![roles.CUSTOMER, roles.VENDOR].includes(numericRole)) {
+  if (![roles.CUSTOMER, roles.PROVIDER].includes(val)) {
     throw new Error("invalid role");
   }
 

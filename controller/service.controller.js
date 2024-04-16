@@ -67,6 +67,16 @@ exports.resizeServiceImages = asyncHandler(async (req, res, next) => {
 exports.getServices = paginate(Service, ["name", "description"]);
 
 /**
+ * @desc get all provider services
+ * @path GET /v1/service/getMyService
+ * @access public
+ */
+exports.getMyService = asyncHandler(async (req, res, next) => {
+  req.query.provider = req.user._id;
+  next();
+});
+
+/**
  * @desc get product by id
  * @path GET /v1/service/:id
  * @access public

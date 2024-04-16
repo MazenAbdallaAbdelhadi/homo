@@ -7,6 +7,7 @@ const {
   updateService,
   uploadServiceImages,
   resizeServiceImages,
+  getMyService,
 } = require("../controller/service.controller");
 const {
   createServiceValidator,
@@ -30,6 +31,14 @@ router
     createService
   )
   .get(getServices);
+
+router.get(
+  "/getMyService",
+  protect,
+  allowedRoles(roles.PROVIDER),
+  getMyService,
+  getServices
+);
 
 router
   .route("/:id")

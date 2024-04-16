@@ -1,6 +1,15 @@
 const { body, checkExact } = require("express-validator");
+const roles = require("../../config/roles");
 const User = require("../../models/user.model");
 const validatorMiddleware = require("../../middleware/validatorMiddleware");
+
+const validateLoggedUserRole = (val) => {
+  if (![roles.CUSTOMER, roles.PROVIDER].includes(val)) {
+    throw new Error("invalid role");
+  }
+
+  return true;
+};
 
 exports.registerValidator = [
   body("name")
@@ -34,6 +43,7 @@ exports.registerValidator = [
     }),
   body("bio").optional(),
   body("profileImage").optional(),
+  body("role").optional().custom(validateLoggedUserRole),
   checkExact(),
   validatorMiddleware,
 ];

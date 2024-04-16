@@ -23,6 +23,7 @@ exports.protect = asyncHandler(async function (req, res, next) {
     return next(unAuthorized({ message: "token not found please login" }));
   }
 
+
   // 2- validate token
   let decoded;
   try {
@@ -35,7 +36,6 @@ exports.protect = asyncHandler(async function (req, res, next) {
 
   // 3- check if token was issued before last changed password
   const user = await User.findById(decoded.userId);
-
   // if user not found
   if (!user) return next(unAuthorized({ message: "unAuthorized" }));
 
