@@ -15,7 +15,8 @@ const app = express();
 if (process.env.NODE_ENV !== "production") app.use(logger("dev"));
 
 // GLOBAL MIDDLEWARE
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.use(cors());
 app.use(cookieParser());
 
 // STRIPE WEBHOOK
