@@ -17,6 +17,9 @@ if (process.env.NODE_ENV !== "production") app.use(logger("dev"));
 app.use(cors());
 app.use(cookieParser());
 
+// FIREBASE
+require("./config/firebase");
+
 // STRIPE WEBHOOK
 // stripe webhook must be before express.json middleware
 app.post(

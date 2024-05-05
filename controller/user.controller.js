@@ -135,3 +135,20 @@ exports.deleteLoggedUser = asyncHandler(async (req, res, next) => {
   req.params.id = req.user._id;
   next();
 });
+
+/**
+ * @desc set FCM for logged user
+ * @path POST /v1/users/fcm-token
+ * @access protected
+ */
+exports.setFCM = asyncHandler(async (req, res) => {
+  if (!req.user.FCMToken) {
+    req.user.FCMToken = req.body.FCMToken;
+
+    await req.user.save();
+
+    res.success({ message: "FCM token set successfully" });
+  } else {
+    res.success({ message: "FCM token already exists" });
+  }
+});

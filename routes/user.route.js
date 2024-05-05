@@ -12,6 +12,7 @@ const {
   deleteLoggedUser,
   updateLoggedUserPassword,
   updateUserPassword,
+  setFCM,
 } = require("../controller/user.controller");
 const {
   createUserValidator,
@@ -21,6 +22,7 @@ const {
   updateLoggedUserValidator,
   updateUserPasswordValidator,
   updateLoggedUserPasswordValidator,
+  setFCMValidator,
 } = require("../utils/validator/user.validator");
 const { protect, allowedRoles } = require("../services/auth");
 const roles = require("../config/roles");
@@ -44,6 +46,8 @@ router.put(
   updateLoggedUserPassword
 );
 router.delete("/deleteMe", deleteLoggedUser, deleteUser);
+
+router.post("/fcm-token", setFCMValidator, setFCM);
 
 router.use(allowedRoles(roles.ADMIN));
 router

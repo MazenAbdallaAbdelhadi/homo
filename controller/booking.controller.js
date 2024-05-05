@@ -3,6 +3,15 @@ const Booking = require("../models/booking.model");
 const Service = require("../models/service.model");
 const { getOne, paginate } = require("../services/factory-handler");
 const { recordNotFound, badRequest } = require("../utils/response/errors");
+const { firebase } = require("../config/firebase");
+const {
+  BOOKING_ACCEPTED,
+  BOOKING_REJECTED,
+  BOOKING_SENT,
+  BOOKING_CANCELED,
+  BOOKING_COMPLETED,
+} = require("../config/notification/notification-types");
+const notificationCategories = require("../config/notification/notification-categories");
 
 /**
  * @desc get all bookings
@@ -58,6 +67,7 @@ exports.bookingRequest = asyncHandler(async (req, res, next) => {
     endDate: { $gt: startDate }, // Bookings that end after the requested start date
     $nor: [{ status: "canceled" }, { status: "rejected" }], // Exclude canceled or rejected bookings
   });
+
   if (existingBookings.length > 0) {
     return next(
       badRequest({ message: "Provider already has a booking during this time" })
@@ -77,6 +87,14 @@ exports.bookingRequest = asyncHandler(async (req, res, next) => {
     price,
     priceAfterDiscount,
   });
+
+  // send notification to provider
+  let message = {
+    token: service.provider.FCMToken,
+    notification: notificationCategories[BOOKING_SENT](service.user.name),
+  };
+
+  await firebase.messaging().send(message);
 
   res.success({
     message: "Booking created successfully",
@@ -102,7 +120,16 @@ exports.bookingResponse = asyncHandler(async (req, res, next) => {
 
   await booking.save();
 
-  //   TODO: send notification to user with new booking request
+  // send notification to user with  booking response
+  let message = {
+    token: booking.user.FCMToken,
+    notification: notificationCategories[
+      response === "accepted" ? BOOKING_ACCEPTED : BOOKING_REJECTED
+    ](booking.provider.name),
+  };
+
+  await firebase.messaging().send(message);
+
   //   TODO: deduct the commision if he accepts
 
   res.success();
@@ -125,7 +152,25 @@ exports.bookingCancle = asyncHandler(async (req, res, next) => {
 
   if (!booking) return next(recordNotFound({ message: "Booking not found" }));
 
-  //   TODO:   send notification to user and provider with new booking status
+  let token;
+  let name;
+
+  if (req.user._id.toString() === booking.user._id.toString()) {
+    token = booking.provider.FCMToken;
+    name = booking.provider.name;
+  } else {
+    token = booking.user.FCMToken;
+    name = booking.user.name;
+  }
+
+  // send notification to user and provider with new booking status
+  let message = {
+    token,
+    notification: notificationCategories[BOOKING_CANCELED](name),
+  };
+
+  await firebase.messaging().send(message);
+
   //   TODO:   if user cancle and is paid revenue the user with 80% of total price
   //   TODO:   if provider cancle and is paid revenue the user with 100% of total price
   res.success({ message: "Booking canceled successfully" });
@@ -134,7 +179,7 @@ exports.bookingCancle = asyncHandler(async (req, res, next) => {
 /**
  * @desc complete booking request
  * @route PUT v1/booking/complete-booking/:id
- * @access protected [provider]
+ * @access protected [user | provider]
  */
 exports.bookingComplete = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
@@ -150,7 +195,26 @@ exports.bookingComplete = asyncHandler(async (req, res, next) => {
   booking.status = "completed";
   await booking.save();
 
-  // TODO:  send notification to user and provider with new booking status
+  // send notification to user and provider with new booking status
+  let token;
+  let name;
+
+  if (req.user._id.toString() === booking.user._id.toString()) {
+    token = booking.provider.FCMToken;
+    name = booking.provider.name;
+  } else {
+    token = booking.user.FCMToken;
+    name = booking.user.name;
+  }
+
+  // send notification to user and provider with new booking status
+  let message = {
+    token,
+    notification: notificationCategories[BOOKING_COMPLETED](name),
+  };
+
+  await firebase.messaging().send(message);
+
   // TODO:  set total price in provider balance
 
   res.success({ message: "Booking completed successfully" });

@@ -30,6 +30,7 @@ const userSchema = new mongoose.Schema(
       enum: enumFormObject(roles),
       default: roles.CUSTOMER,
     },
+    FCMToken: String,
     // child reference (one to many)
     wishlist: [
       {
@@ -66,17 +67,6 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-// const setImageURL = (doc) => {
-//   if (doc.profileImage) {
-//     const imageUrl = `${process.env.BASE_URL}/users/${doc.profileImage}`;
-//     doc.profileImage = imageUrl;
-//   }
-// };
-
-// userSchema.post("init", function (doc) {
-//   setImageURL(doc);
-// });
 
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {

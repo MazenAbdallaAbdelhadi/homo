@@ -19,13 +19,6 @@ const categorySchema = new mongoose.Schema(
   }
 );
 
-// const setImageURL = (doc) => {
-//   doc.image = `${process.env.BASE_URL}/category/${doc.image}`;
-// };
-
-// categorySchema.post("init", function (doc) {
-//   setImageURL(doc);
-// });
 
 const Category = mongoose.model("Category", categorySchema);
 

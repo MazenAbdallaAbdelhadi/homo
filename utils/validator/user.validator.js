@@ -149,3 +149,9 @@ exports.updateLoggedUserValidator = [
   checkExact(),
   validatorMiddleware,
 ];
+
+exports.setFCMValidator = [
+  body("FCMToken").notEmpty().withMessage("FCMToken is required"),
+  checkExact(),
+  validatorMiddleware,
+];
