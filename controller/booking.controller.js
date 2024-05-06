@@ -91,7 +91,7 @@ exports.bookingRequest = asyncHandler(async (req, res, next) => {
   // send notification to provider
   let message = {
     token: service.provider.FCMToken,
-    notification: notificationCategories[BOOKING_SENT](service.user.name),
+    notification: notificationCategories[BOOKING_SENT](service.provider.name),
   };
 
   await firebase.messaging().send(message);
