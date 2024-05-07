@@ -179,7 +179,7 @@ exports.bookingCancle = asyncHandler(async (req, res, next) => {
 /**
  * @desc complete booking request
  * @route PUT v1/booking/complete-booking/:id
- * @access protected [user | provider]
+ * @access protected [user]
  */
 exports.bookingComplete = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
@@ -196,21 +196,9 @@ exports.bookingComplete = asyncHandler(async (req, res, next) => {
   await booking.save();
 
   // send notification to user and provider with new booking status
-  let token;
-  let name;
-
-  if (req.user._id.toString() === booking.user._id.toString()) {
-    token = booking.provider.FCMToken;
-    name = booking.provider.name;
-  } else {
-    token = booking.user.FCMToken;
-    name = booking.user.name;
-  }
-
-  // send notification to user and provider with new booking status
   let message = {
-    token,
-    notification: notificationCategories[BOOKING_COMPLETED](name),
+    token:booking.provider.FCMToken,
+    notification: notificationCategories[BOOKING_COMPLETED](booking.provider.name),
   };
 
   await firebase.messaging().send(message);

@@ -130,17 +130,14 @@ exports.bookingCompleteValidator = [
   param("id").isMongoId().withMessage("invalid booking id"),
   checkExact(),
   validatorMiddleware,
-  // only customer or provider of booking request can response
+  // only customer of booking request can response
   async (req, _res, next) => {
     try {
       const booking = await Booking.findById(req.params.id);
       if (!booking)
         return next(recordNotFound({ message: "booking not found" }));
 
-      if (
-        booking.provider._id.toString() !== req.user._id.toString() &&
-        booking.user._id.toString() !== req.user._id.toString()
-      )
+      if (booking.user._id.toString() !== req.user._id.toString())
         return next(
           unAuthorized({
             message: "your are not allowed to perform this action",
