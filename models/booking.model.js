@@ -52,7 +52,7 @@ const bookingSchema = new mongoose.Schema(
 bookingSchema.pre(/^find/, function (next) {
   this.populate("user");
   this.populate("provider");
-  this.populate({ path: "service", path: "name" });
+  this.populate({ path: "service", path: "title" });
   next();
 });
 
