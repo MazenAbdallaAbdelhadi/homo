@@ -7,6 +7,11 @@ const bookingSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    service: {
+      type: mongoose.Types.ObjectId,
+      ref: "Service",
+      required: true,
+    },
     user: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
@@ -47,6 +52,7 @@ const bookingSchema = new mongoose.Schema(
 bookingSchema.pre(/^find/, function (next) {
   this.populate("user");
   this.populate("provider");
+  this.populate({ path: "service", path: "name" });
   next();
 });
 

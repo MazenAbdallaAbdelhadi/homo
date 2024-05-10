@@ -80,6 +80,7 @@ exports.bookingRequest = asyncHandler(async (req, res, next) => {
 
   const bookingRequeset = await Booking.create({
     provider,
+    service: service._id,
     user: req.user._id,
     startDate,
     endDate,
