@@ -144,7 +144,7 @@ exports.bookingResponse = asyncHandler(async (req, res, next) => {
 exports.bookingCancle = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const booking = await Booking.findOneAndUpdate(
-    { _id: id, status: "accepted" },
+    { _id: id, $or: [{ status: "accepted" }, { status: "pending" }] },
     {
       status: "canceled",
       cancleReason: req.body?.cancleReason,
@@ -172,8 +172,6 @@ exports.bookingCancle = asyncHandler(async (req, res, next) => {
 
   await firebase.messaging().send(message);
 
-  //   TODO:   if user cancle and is paid revenue the user with 80% of total price
-  //   TODO:   if provider cancle and is paid revenue the user with 100% of total price
   res.success({ message: "Booking canceled successfully" });
 });
 
