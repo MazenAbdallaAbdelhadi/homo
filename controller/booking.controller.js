@@ -1,4 +1,5 @@
 const asyncHandler = require("express-async-handler");
+const User = require("../models/user.model");
 const Booking = require("../models/booking.model");
 const Service = require("../models/service.model");
 const { getOne, paginate } = require("../services/factory-handler");
@@ -197,13 +198,13 @@ exports.bookingComplete = asyncHandler(async (req, res, next) => {
 
   // send notification to user and provider with new booking status
   let message = {
-    token:booking.provider.FCMToken,
-    notification: notificationCategories[BOOKING_COMPLETED](booking.provider.name),
+    token: booking.provider.FCMToken,
+    notification: notificationCategories[BOOKING_COMPLETED](
+      booking.provider.name
+    ),
   };
 
   await firebase.messaging().send(message);
-
-  // TODO:  set total price in provider balance
 
   res.success({ message: "Booking completed successfully" });
 });

@@ -1,25 +1,27 @@
 const mongoose = require("mongoose");
 const paymentMethods = require("../config/payment-methods");
+const transactionType = require("../config/transaction-types");
 const { enumFormObject } = require("../utils/helper/enum-from-object");
 
-const orderSchema = new mongoose.Schema(
+const transactionSchema = new mongoose.Schema(
   {
+    from: {
+      type: String,
+      enum: ["USER", "SYSTEM"],
+      required: true,
+    },
     user: {
       type: mongoose.Types.ObjectId,
       ref: "User",
-      required: true,
     },
-    booking:{
-      type: mongoose.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    taxPrice: {
+    amount: {
       type: Number,
-      default: 0,
+      required: true,
+      min: 0.01,
     },
-    totalOrderPrice: {
-      type: Number,
+    transactionType: {
+      type: String,
+      enum: enumFormObject(transactionType),
       required: true,
     },
     paymentMethod: {
@@ -27,18 +29,14 @@ const orderSchema = new mongoose.Schema(
       enum: enumFormObject(paymentMethods),
       default: paymentMethods["COD"],
     },
-    isPaid: {
-      type: Boolean,
-      default: false,
-    },
-    payedAt: Date,
+    date: Date,
   },
   {
     timestamps: true,
   }
 );
 
-orderSchema.pre(/^find/, function (next) {
+transactionSchema.pre(/^find/, function (next) {
   this.populate({
     path: "user",
     select: "name profileImg email",
@@ -49,5 +47,5 @@ orderSchema.pre(/^find/, function (next) {
   next();
 });
 
-const Order = mongoose.model("Order", orderSchema);
+const Order = mongoose.model("Transaction", transactionSchema);
 module.exports = Order;

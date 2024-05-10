@@ -6,7 +6,7 @@ const logger = require("morgan");
 const globalErrorHandler = require("./middleware/globalErrorHandler");
 const errors = require("./utils/response/errors");
 const responseHandler = require("./utils/response/responseHandler");
-const { paymentWebHook } = require("./controller/order.controller");
+const { paymentWebHook } = require("./controller/transaction.controller");
 
 const app = express();
 

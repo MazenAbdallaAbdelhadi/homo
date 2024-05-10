@@ -11,8 +11,6 @@ router.use("/api/v1/wishlist", require("./wishlist.route")); // DONE
 router.use("/api/v1/address", require("./address.route")); // DONE
 router.use("/api/v1/coupon", require("./coupon.route")); // DONE
 router.use("/api/v1/booking", require("./booking.route")); // DONE
-// TODO: these routes
-// router.use("/api/v1/payment", require("./payment.route")); // IN PROCESS
-// router.use("/api/v1/payout", require("./payout.route"));
+router.use("/api/v1/transaction", require("./transaction.route")); // DONE
 
 module.exports = router;

@@ -1,0 +1,6 @@
+module.exports = {
+  PAY_BOOKING: "PAY_BOOKING",
+  PAY_FINE: "PAY_FINE",
+  PAY_WORKER: "PAY_WORKER",
+  PAY_REVENUE: "PAY_REVENUE",
+};
