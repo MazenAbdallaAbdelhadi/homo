@@ -66,7 +66,11 @@ exports.bookingRequest = asyncHandler(async (req, res, next) => {
     provider,
     startDate: { $lt: endDate }, // Bookings that start before the requested end date
     endDate: { $gt: startDate }, // Bookings that end after the requested start date
-    $nor: [{ status: "canceled" }, { status: "rejected" }], // Exclude canceled or rejected bookings
+    $nor: [
+      { status: "canceled" },
+      { status: "rejected" },
+      { status: "completed" },
+    ], // Exclude canceled or rejected bookings
   });
 
   if (existingBookings.length > 0) {

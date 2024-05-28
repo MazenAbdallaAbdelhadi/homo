@@ -62,6 +62,12 @@ const userSchema = new mongoose.Schema(
         default: 0.1, // 10% commission for the platform
       },
     },
+    chats: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     timestamps: true,
@@ -72,6 +78,12 @@ userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, 12);
   }
+  next();
+});
+
+userSchema.pre("init", function (next) {
+  this.populate({ path: "chats", select: "name email profileImage bio phone" });
+
   next();
 });
 

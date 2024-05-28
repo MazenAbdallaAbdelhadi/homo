@@ -79,7 +79,10 @@ exports.deleteReviewValidator = [
             );
           }
         });
+      } else if (req.user.role === "admin") {
+        return true;
       }
+
       return true;
     }),
   validatorMiddleware,

@@ -12,5 +12,6 @@ router.use("/api/v1/address", require("./address.route")); // DONE
 router.use("/api/v1/coupon", require("./coupon.route")); // DONE
 router.use("/api/v1/booking", require("./booking.route")); // DONE
 router.use("/api/v1/transaction", require("./transaction.route")); // DONE
+router.use("/api/v1/chat", require("./chat.route")); // DONE
 
 module.exports = router;
