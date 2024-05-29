@@ -8,7 +8,14 @@ const { recordNotFound } = require("../utils/response/errors");
  * @access private
  */
 exports.getMyChats = asyncHandler(async (req, res) => {
-  res.success({ data: req.user.chats });
+  const { user } = req;
+
+  const chats = await user.populate({
+    path: "chats",
+    select: "name email profileImage",
+  });
+  
+  res.success({ data: chats.chats });
 });
 
 /**

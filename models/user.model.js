@@ -81,12 +81,6 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-userSchema.pre(/^find/, function (next) {
-  this.populate({ path: "chats", select: "name email profileImage bio phone" });
-
-  next();
-});
-
 userSchema.methods.toJSON = function () {
   const userObj = this.toObject();
 
