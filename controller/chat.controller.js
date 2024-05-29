@@ -23,11 +23,15 @@ exports.createNewChat = asyncHandler(async (req, res, next) => {
     return next(recordNotFound({ message: "user not found" }));
   }
 
-  user.chats.push(req.user._id);
-  await user.save();
+  if (!user.chats.includes(req.user._id)) {
+    user.chats.push(req.user._id);
+    await user.save();
+  }
 
-  req.user.chats.push(user._id);
-  await req.user.save();
+  if (!req.user.chats.includes(user._id)) {
+    req.user.chats.push(user._id);
+    await req.user.save();
+  }
 
   res.success({ message: "Room created successfully" });
 });
