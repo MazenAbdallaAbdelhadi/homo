@@ -1,3 +1,6 @@
+const asyncHandler = require("express-async-handler");
+const errors = require("../utils/response/errors");
+
 const Review = require("../models/review.model");
 const factory = require("../services/factory-handler");
 
@@ -34,4 +37,11 @@ exports.updateReview = factory.updateOne(Review);
  * @route DELETE /api/v1/review/:id
  * @access protected [owner | admin]
  */
-exports.deleteReview = factory.deleteOne(Review);
+// exports.deleteReview = factory.deleteOne(Review);
+exports.deleteReview = asyncHandler(async (req, res, next) => {
+  const review = await Review.findOne({ _id: req.params.id });
+  if (!review) return next(errors.recordNotFound());
+  await review.deleteOne();
+
+  res.success();
+});

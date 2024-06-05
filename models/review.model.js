@@ -32,7 +32,9 @@ reviewSchema.pre(/^find/, function (next) {
   next();
 });
 
-const calcAverageRatingsAndQuantity = async function (serviceId) {
+reviewSchema.statics.calcAverageRatingsAndQuantity = async function (
+  serviceId
+) {
   const result = await this.aggregate([
     // Stage 1 : get all reviews in specific service
     {
@@ -65,9 +67,13 @@ reviewSchema.post("save", async function () {
   await this.constructor.calcAverageRatingsAndQuantity(this.service);
 });
 
-reviewSchema.post("findOneAndDelete", async function () {
-  await calcAverageRatingsAndQuantity(this.service);
-});
+reviewSchema.post(
+  "deleteOne",
+  { document: true, query: false },
+  async function () {
+    await this.constructor.calcAverageRatingsAndQuantity(this.service);
+  }
+);
 
 const Review = mongoose.model("Review", reviewSchema);
 module.exports = Review;
