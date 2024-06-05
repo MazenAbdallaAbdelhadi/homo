@@ -4,6 +4,7 @@ const {
   filterOrderForLoggedUser,
   getOrders,
   paymentSheet,
+  paymentFine,
 } = require("../controller/transaction.controller");
 const { protect, allowedRoles } = require("../services/auth");
 const roles = require("../config/roles");
@@ -26,5 +27,7 @@ router.post(
   allowedRoles(roles.CUSTOMER),
   paymentSheet
 );
+
+router.post("/payment-fine", allowedRoles(roles.PROVIDER), paymentFine);
 
 module.exports = router;
