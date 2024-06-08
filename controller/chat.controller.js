@@ -14,8 +14,8 @@ exports.getMyChats = asyncHandler(async (req, res) => {
     path: "chats",
     select: "name email profileImage",
   });
-  
-  res.success({ data: chats.chats });
+
+  res.success({ data: chats.chats.reverse() });
 });
 
 /**
