@@ -5,6 +5,7 @@ const {
   getOrders,
   paymentSheet,
   paymentFine,
+  payCommitionsCash,
 } = require("../controller/transaction.controller");
 const { protect, allowedRoles } = require("../services/auth");
 const roles = require("../config/roles");
@@ -29,5 +30,6 @@ router.post(
 );
 
 router.post("/payment-fine", allowedRoles(roles.PROVIDER), paymentFine);
+router.post("/pay-commition", allowedRoles(roles.ADMIN), payCommitionsCash);
 
 module.exports = router;

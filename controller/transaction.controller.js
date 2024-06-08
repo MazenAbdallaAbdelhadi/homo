@@ -4,6 +4,7 @@ const {
   recordNotFound,
   badRequest,
   unAuthorized,
+  validationError,
 } = require("../utils/response/errors");
 const User = require("../models/user.model");
 const Transaction = require("../models/transaction.model");
@@ -13,6 +14,7 @@ const { getAll } = require("../services/factory-handler");
 const paymentMethods = require("../config/payment-methods");
 const transactionType = require("../config/transaction-types");
 const roles = require("../config/roles");
+const { isValidObjectId } = require("mongoose");
 
 // -> user pay booking -> done
 // -> [user, provider] pay fine -> done
@@ -275,3 +277,34 @@ exports.filterOrderForLoggedUser = asyncHandler(async (req, res, next) => {
  * @access private [Admin]
  */
 exports.getOrders = getAll(Transaction);
+
+/**
+ * @desc pay admin commition in cash
+ * @route GET v1/pay-commition
+ * @access private [Admin]
+ */
+exports.payCommitionsCash = asyncHandler(async (req, res, next) => {
+  const { userId, amount } = req.body;
+
+  if (!userId || !isValidObjectId(userId) || amount)
+    return next(
+      validationError({ message: "invalide data", data: { userId, amount } })
+    );
+
+  // 1- create transaction order
+  await Transaction.create({
+    from: "SYSTEM",
+    user: userId,
+    transactionType: transactionType.PAY_FINE,
+    paymentMethod: paymentMethods.COD,
+    amount: amount,
+    date: Date.now(),
+  });
+
+  // 2- add paid amount to user account
+  const user = await User.findById(userId);
+  user.providerAccount.balance += amount;
+  await user.save();
+
+  res.success({ message: "PAYED" });
+});
