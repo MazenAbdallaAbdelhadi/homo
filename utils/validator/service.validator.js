@@ -16,18 +16,6 @@ exports.createServiceValidator = [
     .withMessage("Service description is required")
     .isLength({ min: 25 })
     .withMessage("Service description must be at least 25 characters"),
-  body("price")
-    .notEmpty()
-    .withMessage("Service price is required")
-    .custom((val, { req }) => {
-      const num = parseFloat(val);
-      if (isNaN(num)) return false;
-      req.body.price = num;
-      return true;
-    })
-    .withMessage("Service price must be  a number")
-    .custom((val) => val >= 0.01)
-    .withMessage("Service price must be more than 0.01"),
   body("coverImage").notEmpty().withMessage("Service cover image is required"),
   body("images").optional().isArray({ max: 5 }),
   body("category")
@@ -72,17 +60,6 @@ exports.updateServiceValidator = [
     .optional()
     .isLength({ min: 25 })
     .withMessage("Service description must be at least 25 characters"),
-  body("price")
-    .optional()
-    .custom((val, { req }) => {
-      const num = parseFloat(val);
-      if (isNaN(num)) return false;
-      req.body.price = num;
-      return true;
-    })
-    .withMessage("Service price must be  a number")
-    .custom((val) => val >= 0.01)
-    .withMessage("Service price must be more than 0.01"),
   body("coverImage").optional(),
   body("images").optional().isArray({ max: 5 }),
   body("category")
