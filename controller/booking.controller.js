@@ -100,12 +100,12 @@ exports.bookingRequest = asyncHandler(async (req, res, next) => {
   });
 
   // send notification to provider
-  let message = {
-    token: service.provider.FCMToken,
-    notification: notificationCategories[BOOKING_SENT](service.provider.name),
-  };
+  // let message = {
+  //   token: service.provider.FCMToken,
+  //   notification: notificationCategories[BOOKING_SENT](service.provider.name),
+  // };
 
-  await firebase.messaging().send(message);
+  // await firebase.messaging().send(message);
 
   res.success({
     message: "Booking created successfully",
@@ -132,14 +132,14 @@ exports.bookingResponse = asyncHandler(async (req, res, next) => {
   await booking.save();
 
   // send notification to user with  booking response
-  let message = {
-    token: booking.user.FCMToken,
-    notification: notificationCategories[
-      response === "accepted" ? BOOKING_ACCEPTED : BOOKING_REJECTED
-    ](booking.provider.name),
-  };
+  // let message = {
+  //   token: booking.user.FCMToken,
+  //   notification: notificationCategories[
+  //     response === "accepted" ? BOOKING_ACCEPTED : BOOKING_REJECTED
+  //   ](booking.provider.name),
+  // };
 
-  await firebase.messaging().send(message);
+  // await firebase.messaging().send(message);
 
   //   TODO: deduct the commision if he accepts
 
@@ -163,24 +163,24 @@ exports.bookingCancle = asyncHandler(async (req, res, next) => {
 
   if (!booking) return next(recordNotFound({ message: "Booking not found" }));
 
-  let token;
-  let name;
+  // let token;
+  // let name;
 
-  if (req.user._id.toString() === booking.user._id.toString()) {
-    token = booking.provider.FCMToken;
-    name = booking.provider.name;
-  } else {
-    token = booking.user.FCMToken;
-    name = booking.user.name;
-  }
+  // if (req.user._id.toString() === booking.user._id.toString()) {
+  //   token = booking.provider.FCMToken;
+  //   name = booking.provider.name;
+  // } else {
+  //   token = booking.user.FCMToken;
+  //   name = booking.user.name;
+  // }
 
   // send notification to user and provider with new booking status
-  let message = {
-    token,
-    notification: notificationCategories[BOOKING_CANCELED](name),
-  };
+  // let message = {
+  //   token,
+  //   notification: notificationCategories[BOOKING_CANCELED](name),
+  // };
 
-  await firebase.messaging().send(message);
+  // await firebase.messaging().send(message);
 
   res.success({ message: "Booking canceled successfully" });
 });
@@ -205,14 +205,14 @@ exports.bookingComplete = asyncHandler(async (req, res, next) => {
   await booking.save();
 
   // send notification to user and provider with new booking status
-  let message = {
-    token: booking.provider.FCMToken,
-    notification: notificationCategories[BOOKING_COMPLETED](
-      booking.provider.name
-    ),
-  };
+  // let message = {
+  //   token: booking.provider.FCMToken,
+  //   notification: notificationCategories[BOOKING_COMPLETED](
+  //     booking.provider.name
+  //   ),
+  // };
 
-  await firebase.messaging().send(message);
+  // await firebase.messaging().send(message);
 
   res.success({ message: "Booking completed successfully" });
 });
