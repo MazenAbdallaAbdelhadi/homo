@@ -286,14 +286,14 @@ exports.getOrders = getAll(Transaction);
 exports.payCommitionsCash = asyncHandler(async (req, res, next) => {
   const { userId, amount } = req.body;
 
-  if (!userId || !isValidObjectId(userId) || amount)
+  if (!userId || !isValidObjectId(userId) || !amount)
     return next(
       validationError({ message: "invalide data", data: { userId, amount } })
     );
 
   // 1- create transaction order
   await Transaction.create({
-    from: "SYSTEM",
+    from: "USER",
     user: userId,
     transactionType: transactionType.PAY_FINE,
     paymentMethod: paymentMethods.COD,
@@ -303,8 +303,49 @@ exports.payCommitionsCash = asyncHandler(async (req, res, next) => {
 
   // 2- add paid amount to user account
   const user = await User.findById(userId);
-  user.providerAccount.balance += amount;
+  user.providerAccount.balance += Number(amount);
   await user.save();
 
   res.success({ message: "PAYED" });
+});
+
+async function calculateTransactionAmounts() {
+  try {
+    const result = await Transaction.aggregate([
+      {
+        $match: {
+          transactionType: {
+            $in: ["PAY_BOOKING", "PAY_FINE", "PAY_WORKER"],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "$transactionType",
+          totalAmount: { $sum: "$amount" },
+        },
+      },
+    ]);
+
+    const amounts = {
+      PAY_BOOKING: 0,
+      PAY_FINE: 0,
+      PAY_WORKER: 0,
+    };
+
+    result.forEach((item) => {
+      amounts[item._id] = item.totalAmount;
+    });
+
+    return amounts;
+  } catch (error) {
+    console.error("Error aggregating transaction amounts:", error);
+    throw error;
+  }
+}
+
+exports.getStates = asyncHandler(async (req, res) => {
+  const amounts = await calculateTransactionAmounts();
+
+  res.success({ data: amounts });
 });

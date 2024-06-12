@@ -20,7 +20,7 @@ exports.getOne = (Model) =>
 exports.getAll = (Model) =>
   asyncHandler(async (req, res) => {
     const documents = await Model.find();
-    res.success(documents);
+    res.success({ data: documents });
   });
 
 exports.paginate = (Model, searchFields) =>

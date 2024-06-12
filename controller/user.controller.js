@@ -5,9 +5,10 @@ const User = require("../models/user.model");
 const {
   createOne,
   getOne,
-  paginate,
+  // paginate,
   updateOne,
   deleteOne,
+  getAll,
 } = require("../services/factory-handler");
 const { uploadSingle, uploadToCloudinary } = require("../services/file-upload");
 const { generateAccessToken } = require("../services/auth");
@@ -44,7 +45,7 @@ exports.createUser = createOne(User);
  * @path GET /v1/users
  * @access private ADMIN
  */
-exports.getUsers = paginate(User, ["name", "email"]);
+exports.getUsers = getAll(User);
 
 /**
  * @desc get user by id

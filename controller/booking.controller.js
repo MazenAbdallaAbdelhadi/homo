@@ -62,7 +62,7 @@ exports.bookingRequest = asyncHandler(async (req, res, next) => {
   const provider = service.provider;
 
   // if provider balance is less than -200 then he can't get more booking requests
-  if (provider.providerAccount.balance < -200) {
+  if (provider.providerAccount.balance < -500) {
     return next(badRequest({ message: "PROVIDER ACOUNT IS INACTIVE" }));
   }
 
